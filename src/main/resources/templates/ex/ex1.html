@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>ex1</title>
+</head>
+
+<body>
+<h4>[[${list}]]</h4>
+
+<hr>
+<h4 th:text="${list}"></h4>
+
+<hr>
+<div th:with="num1 = ${10}, num2= ${20}">
+    <h4 th:text="${num1 + num2}"></h4>
+</div>
+
+<!--/* 반복문 처리 */-->
+<hr>
+<ul>
+    <li th:each="str:${list}" th:text="${str}"></li>
+</ul>
+
+<!--/* th block 별도 태그로 사용 */-->
+<hr>
+<ul>
+    <th:block th:each="str:${list}">
+        <li>[[${str}]]</li>
+    </th:block>
+</ul>
+
+<!--/* th each 사용시 변수 */-->
+<!--/* status = index, count, size, first, last, odd, even */-->
+<hr>
+<ul>
+    status.index -- list value <br>
+    <li th:each="str, status:${list}">
+        [[${status.index}]] -- [[${str}]]
+    </li>
+</ul>
+
+<ul>
+    status.count -- list value <br>
+    <li th:each="str, status:${list}">
+        [[${status.count}]] -- [[${str}]]
+    </li>
+</ul>
+
+<!--/* th if문 */-->
+<hr>
+<ul>
+    <li th:each="str, status:${list}">
+        <span th:if="${status.odd}">[[${status.count}]] 홀 --- [[${str}]]</span>
+        <span th:unless="${status.odd}">[[${status.count}]] 짝 --- [[${str}]]</span>
+    </li>
+</ul>
+
+<!--/* 3항연산 bool ? "" : ""; */-->
+<hr>
+<ul>
+    <li th:each="str, status:${list}">
+        <span th:text="${status.odd} ? '홀수 -- ' + ${str} : '거짓'"></span>
+    </li>
+</ul>
+
+<!--/* switch */-->
+<hr>
+<ul>
+    <li th:each="str, status:${list}">
+        <th:block th:switch="${status.index % 3}">
+            <span th:case="0">나머지0</span>
+            <span th:case="1">나머지1</span>
+            <span th:case="2">나머지2</span>
+        </th:block>
+    </li>
+</ul>
+
+<!--/* 링크 */-->
+<hr>
+<a th:href="@{/hello}">goto /hello</a>
+<!--/* 링크 ? queryString */-->
+<hr>
+<a th:href="@{/hello(name='김기원', age=33)}">goto /hello?name=kkw&age=33</a>
+
+<!--/* 링크가 배열인경우 */-->
+<hr>
+<a th:href="@{/hello(types=${list})}">goto /hello? array</a>
+<hr>
+<a th:href="@{/hello(types=${ {'요리사','건축가','운동선수','선생님'} })}">
+    Goto /hello with array
+</a>
+
+
+</body>
+</html>
