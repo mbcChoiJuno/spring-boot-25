@@ -16,7 +16,6 @@ import java.util.stream.IntStream;
 @Log4j2
 public class MemoController {
 
-    //http://192.168.111.105:80/hello
     //http://192.168.0.171:6805/hello
     @GetMapping("/hello")
     public void hello(Model model) {
@@ -51,7 +50,6 @@ public class MemoController {
         }
     }
 
-    //http://192.168.111.105:80/ex/ex2
     //http://192.168.0.171:6805/ex/ex2
     @GetMapping("/ex/ex2")
     public void ex2(Model model) {
@@ -73,5 +71,15 @@ public class MemoController {
         model.addAttribute("list", strList);
         model.addAttribute("map", map);
         model.addAttribute("dto", sample);
+    }
+
+    //http://192.168.0.171:6805/ex/ex3
+    @GetMapping("/ex/ex3")
+    public void ex3(Model model) {
+        log.info("MemoController.ex3() in........");
+
+        model.addAttribute("arr", new String[] {
+           "김", "이", "박", "최"
+        });
     }
 }
