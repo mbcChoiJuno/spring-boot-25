@@ -9,7 +9,7 @@ IntelliJ IDEA 2022.2.1 (Ultimate Edition)
 자바 웹 개발 워크북
 
 # 부트 설정파일
-=========== application.properties ============
+# application.properties 
 
     // DB (220-21 MariaDB)
     
