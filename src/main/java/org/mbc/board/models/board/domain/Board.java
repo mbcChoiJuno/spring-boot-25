@@ -30,4 +30,8 @@ public class Board extends BaseEntity {
     @Column(name = "board_writer",
             length = 50)
     private String writer;
+
+    @Column(name = "is_deleted",
+            columnDefinition = "CHAR(1) DEFAULT 'N'")
+    private String deletedYn;
 }

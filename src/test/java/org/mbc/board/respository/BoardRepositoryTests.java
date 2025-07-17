@@ -103,23 +103,23 @@ public class BoardRepositoryTests {
         Pageable pageable = PageRequest.of(pageIndex, pageItemCount,
                 Sort.by("boardIndex").descending());
 
-        var pageSet = boardJpaRepository.findAll(pageable);
+        var result = boardJpaRepository.findAll(pageable);
 
-        if (pageIndex > pageSet.getTotalPages()) {
+        if (pageIndex > result.getTotalPages()) {
             // TODO: exception
             return;
         }
 
 
-        Long totalElementCnt = pageSet.getTotalElements(); // 전체 게시물
-        int totalPageCnt = pageSet.getTotalPages();        // 전체 페이지수
-        var pageNum = pageSet.getNumber();                 // 현재 페이지
-        var pageSize = pageSet.getSize();                  // 페이지당 item 개수
+        Long totalElementCnt = result.getTotalElements(); // 전체 게시물
+        int totalPageCnt = result.getTotalPages();        // 전체 페이지수
+        var pageNum = result.getNumber();                 // 현재 페이지
+        var pageSize = result.getSize();                  // 페이지당 item 개수
 
-        var pageHasPrevious = pageSet.hasPrevious();       // 이전 페이지 존재 여부
-        var pageHasNext = pageSet.hasNext();               // 다음 페이지 존재 여부
-        var pageIsFirst = pageSet.isFirst();               // 첫 페이지 여부
-        var pageIsLast = pageSet.isLast();                 // 마지막 페이지 여부
+        var pageHasPrevious = result.hasPrevious();       // 이전 페이지 존재 여부
+        var pageHasNext = result.hasNext();               // 다음 페이지 존재 여부
+        var pageIsFirst = result.isFirst();               // 첫 페이지 여부
+        var pageIsLast = result.isLast();                 // 마지막 페이지 여부
 
         log.info("totalElementCnt:" + totalElementCnt);
         log.info("totalPageCnt:" + totalPageCnt);
@@ -131,7 +131,65 @@ public class BoardRepositoryTests {
         log.info("pageIsFirst:" + pageIsFirst);
         log.info("pageIsLast:" + pageIsLast);
 
-        pageSet.forEach(board -> {
+        result.forEach(board -> {
+            log.info("%d. %s | %s .... %s".formatted(board.getBoardIndex(),
+                    board.getTitle(),
+                    board.getContent(),
+                    board.getWriter()));
+        });
+    }
+
+    @Test
+    public void testQueryDsl_search1() {
+
+        int pageIndex = 1;
+        int pageItemCount = 10;
+
+        Pageable pageable = PageRequest.of(pageIndex, pageItemCount,
+                Sort.by("title").descending());
+
+        var result = boardJpaRepository.search1(pageable);
+
+        result.getContent().forEach(board -> {
+            log.info("%d. %s | %s .... %s".formatted(board.getBoardIndex(),
+                    board.getTitle(),
+                    board.getContent(),
+                    board.getWriter()));
+        });
+    }
+
+    @Test
+    public void testQueryDsl_searchAll() {
+
+        var types = new String[] {"t", "w"};
+
+        var keyword = "10";
+
+        var pageable = PageRequest.of(0, 10, Sort.by("boardIndex").descending());
+
+        var result = boardJpaRepository.searchAll(types, keyword, pageable);
+
+        Long totalElementCnt = result.getTotalElements(); // 전체 게시물
+        int totalPageCnt = result.getTotalPages();        // 전체 페이지수
+        var pageNum = result.getNumber();                 // 현재 페이지
+        var pageSize = result.getSize();                  // 페이지당 item 개수
+
+        var pageHasPrevious = result.hasPrevious();       // 이전 페이지 존재 여부
+        var pageHasNext = result.hasNext();               // 다음 페이지 존재 여부
+        var pageIsFirst = result.isFirst();               // 첫 페이지 여부
+        var pageIsLast = result.isLast();                 // 마지막 페이지 여부
+
+        log.info("totalElementCnt:" + totalElementCnt);
+        log.info("totalPageCnt:" + totalPageCnt);
+        log.info("pageNum:" + pageNum);
+        log.info("pageSize:" + pageSize);
+
+        log.info("pageHasPrevious:" + pageHasPrevious);
+        log.info("pageHasNext:" + pageHasNext);
+        log.info("pageIsFirst:" + pageIsFirst);
+        log.info("pageIsLast:" + pageIsLast);
+
+        result.forEach(board -> {
             log.info("%d. %s | %s .... %s".formatted(board.getBoardIndex(),
                     board.getTitle(),
                     board.getContent(),
