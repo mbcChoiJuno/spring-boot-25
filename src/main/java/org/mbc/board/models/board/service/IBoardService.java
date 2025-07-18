@@ -1,6 +1,8 @@
 package org.mbc.board.models.board.service;
 
 import org.mbc.board.models.board.dto.BoardDTO;
+import org.mbc.board.models.board.dto.PageRequestDTO;
+import org.mbc.board.models.board.dto.PageResponseDTO;
 
 import java.util.List;
 
@@ -20,4 +22,6 @@ public interface IBoardService {
     Long performModifyBoard(BoardDTO boardDTO);
 
     Long performSoftDeleteBoard(Long boardIndex);
+
+    PageResponseDTO<BoardDTO> getBoardPage(PageRequestDTO request);
 }

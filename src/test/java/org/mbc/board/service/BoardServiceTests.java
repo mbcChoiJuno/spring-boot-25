@@ -3,9 +3,11 @@ package org.mbc.board.service;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.mbc.board.models.board.dto.BoardDTO;
+import org.mbc.board.models.board.dto.PageRequestDTO;
 import org.mbc.board.models.board.service.IBoardServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 @SpringBootTest
 @Log4j2
@@ -15,7 +17,7 @@ public class BoardServiceTests {
     IBoardServiceImpl boardService;
 
     @Test
-    public void testRegist() {
+    public void testPerformPostBoard() {
        var board = BoardDTO.builder()
                .title("등록 테스트 제목")
                .content("등록 테스트 내용")
@@ -35,6 +37,23 @@ public class BoardServiceTests {
         var boards = boardService.getBoardList(page, pageChildCount);
 
         for (BoardDTO board : boards) {
+            log.info(board.toString());
+        }
+    }
+
+    @Test
+    public void testGetBoardPage() {
+
+        var pageable = PageRequestDTO.builder()
+                .type("tcw")
+                .keyword("1")
+                .page(1)
+                .size(10)
+                .build();
+
+        var boardPage = boardService.getBoardPage(pageable);
+
+        for (var board : boardPage.getItems()) {
             log.info(board.toString());
         }
     }

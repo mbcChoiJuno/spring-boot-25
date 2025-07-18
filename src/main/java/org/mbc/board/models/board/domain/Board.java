@@ -31,7 +31,13 @@ public class Board extends BaseEntity {
             length = 50)
     private String writer;
 
-    @Column(name = "is_deleted",
-            columnDefinition = "CHAR(1) DEFAULT 'N'")
+    @Column(name = "is_deleted", nullable = false, length = 1)
     private String deletedYn;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.deletedYn == null) {
+            this.deletedYn = "N";
+        }
+    }
 }

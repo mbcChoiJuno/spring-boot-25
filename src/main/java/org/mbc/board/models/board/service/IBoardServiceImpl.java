@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.mbc.board.models.board.domain.Board;
 import org.mbc.board.models.board.dto.BoardDTO;
+import org.mbc.board.models.board.dto.PageRequestDTO;
+import org.mbc.board.models.board.dto.PageResponseDTO;
 import org.mbc.board.models.board.repository.IBoardJpaRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Log4j2
@@ -79,5 +82,33 @@ public class IBoardServiceImpl implements IBoardService {
         board.setDeletedYn("Y");
 
         return board.getBoardIndex();
+    }
+
+    @Override
+    public PageResponseDTO<BoardDTO> getBoardPage(PageRequestDTO request) {
+
+        String order = "boardIndex";
+        var pageable = request.getPageable(order);
+
+        var types = request.getTypes();
+        var keyword = request.getKeyword();
+
+        var result = boardJpaRepository.searchAll(types, keyword, pageable);
+
+        var items = result.getContent().stream()
+                .map(board -> modelMapper.map(board, BoardDTO.class))
+                .collect(Collectors.toList());
+
+        // vs
+        /*
+        result.forEach(board -> {
+            modelMapper.map(board, BoardDTO.class);
+        });*/
+
+        return PageResponseDTO.<BoardDTO>withAll()
+                .request(request)
+                .items(items)
+                .total((int) result.getTotalElements())
+                .build();
     }
 }

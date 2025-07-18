@@ -97,7 +97,7 @@ public class BoardRepositoryTests {
     @Test
     public void testPaging() {
 
-        int pageIndex = 21;
+        int pageIndex = 1;
         int pageItemCount = 10;
 
         Pageable pageable = PageRequest.of(pageIndex, pageItemCount,

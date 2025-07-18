@@ -20,4 +20,5 @@ public class BoardDTO {
     private String writer;
     private LocalDateTime createDate;
     private LocalDateTime latestDate;
+    private String deletedYn;
 }

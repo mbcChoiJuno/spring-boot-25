@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/basic.html}">
+
+<div layout:fragment="content">
+    <div class="row mt-3">
+        <!--/* 검색용 Form */-->
+        <form action="/board/list" method="get">
+            <div class="col">
+                <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <select class="form-select" name="type">
+                            <option value="">---</option>
+                            <option value="t" th:selected="${pageRequestDTO.type=='t'}">제목</option>
+                            <option value="c" th:selected="${pageRequestDTO.type=='c'}">내용</option>
+                            <option value="w" th:selected="${pageRequestDTO.type=='w'}">작성자</option>
+                            <option value="tc" th:selected="${pageRequestDTO.type=='tc'}">제목+내용</option>
+                            <option value="tw" th:selected="${pageRequestDTO.type=='tw'}">제목+작성자</option>
+                            <option value="tcw" th:selected="${pageRequestDTO.type=='tcw'}">제목+내용+작성자</option>
+                        </select>
+                    </div>
+
+                    <input type="text" class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}"/>
+
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary searchBtn" type="submit">검색</button>
+                        <button class="btn btn-outline-secondary clearBtn" type="button">초기화</button>
+                    </div>
+
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        게시판 리스트 페이지
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">Board List</h5>
+                        <!--/* Table */-->
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">no</th>
+                                <th scope="col">제목</th>
+                                <th scope="col">작성자</th>
+                                <th scope="col">등록일</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+                            <tr th:each="board:${response.items}">
+                                <th scope="row">[[${board.boardIndex}]]</th>
+                                <th scope="row">[[${board.title}]]</th>
+                                <th scope="row">[[${board.writer}]]</th>
+                                <th scope="row">[[${#temporals.format(board.createDate, 'yyyy-MM-dd')}]]</th>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="float-end">
+                            <ul class="pagination flex-wrap">
+                                <li class="page-item" th:if="${response.hasPrev}">
+                                    <a class="page-link" th:data-num="${response.navStart - 1}">이전페이지</a>
+                                </li>
+                                <th:block th:each="i:${#numbers.sequence(response.navStart, response.navEnd)}">
+                                    <li th:class="${response.page == i}?'page-item active':'page-item'">
+                                        <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+                                    </li>
+                                </th:block>
+                                <li class="page-item" th:if="${response.hasNext}">
+                                    <a class="page-link" th:data-num="${response.navEnd + 1}">다음페이지</a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script layout:fragment="script" th:inline="javascript">
+
+    // 하단 nav 버튼 이벤트 listener 처리
+    document.querySelector(".pagination").addEventListener("click", function (e) {
+        e.preventDefault() // 기존 기능 무시
+        e.stopPropagation() // 상위 엘리먼트로 이벤트 전파 중단
+
+        const target = e.target
+
+        if (target.tagName !== 'A') {
+            return
+        }
+
+        // <a class="page-link" th:data-num="${i}">[[${i}]]</a>
+        const num = target.getAttribute("data-num")
+
+        // <form action="/board/list" method="get">
+        const formObj = document.querySelector("form")
+
+        // ` 백틱 : 문자열${변수} 혼합해서 사용
+        formObj.innerHTML += `<input type='hidden' name='page' value="${num}">`
+        // -> <input type="hidden" name="size" th:value="${pageRequestDTO.size}">
+        // -> <input type='hidden' name='page' value="${num}">
+
+        // form 설정 적용
+        formObj.submit();
+
+    }, false) // 버블링 false
+
+    // 검색옵션 초기화
+    document.querySelector(".clearBtn").addEventListener("click", function (e) {
+        e.preventDefault() // 기존 기능 무시
+        e.stopPropagation() // 상위 엘리먼트로 이벤트 전파 중단
+
+        self.location = '/board/list'
+    }, false) // 버블링 false
+
+</script>
