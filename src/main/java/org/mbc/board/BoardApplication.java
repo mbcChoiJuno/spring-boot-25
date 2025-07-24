@@ -2,15 +2,11 @@ package org.mbc.board;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-import org.springframework.web.context.annotation.ApplicationScope;
-import org.springframework.web.context.annotation.RequestScope;
 
-//@ComponentScan(basePackages = "com.mbc.juno")
 @SpringBootApplication
-@EnableJpaAuditing // main 메서드 실행시 리스너 동작함?
-
+@EnableJpaAuditing // main메서드 실행시 감시작업 동작 함.!!!
+// @EntityListeners(value= AuditingEntityListener.class) 와 셋트로 동작한다.
 public class BoardApplication {
 
     public static void main(String[] args) {
